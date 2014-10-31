@@ -1,0 +1,32 @@
+mainColor = #9a3;
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg)
+    }
+    100% {
+        transform: rotate(360deg)
+    }
+
+}
+
+.spiner {
+    display: inline-block;
+    width: 31px;
+    height: 31px;
+    position: relative;
+    box-sizing: border-box;
+    margin: 0 3px;
+    padding 3px
+
+    &__line {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        border 2px solid transparent;
+        border-bottom-color #33691e
+        box-sizing: border-box;
+        animation: rotate linear 1s infinite;
+    }
+}

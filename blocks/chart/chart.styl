@@ -1,0 +1,38 @@
+.chart {
+
+    svg {
+        font: 10px sans-serif;
+    }
+
+    .focus {
+        .area {
+            stroke: #9ccc65;
+            fill: #7cb342;
+        }
+    }
+    .area {
+        fill: #7cb342;
+    }
+
+    .axis path, .axis line {
+        fill: none;
+        stroke: #212121;
+        shape-rendering: crispEdges;
+    }
+    .axis text {
+        font-weight: 700;
+        color: #212121;
+    }
+
+    .brush .extent {
+        stroke: #fff;
+        fill-opacity: .1;
+        shape-rendering: crispEdges;
+    }
+}
+
+@css {
+    .chart .area {
+        clip-path: url("#clip");
+    }
+}

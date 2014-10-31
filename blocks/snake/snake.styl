@@ -1,0 +1,179 @@
+box_shadow_generate(param) {
+    box-shadow: param, 0 3px 6px rgba(0, 0, 0, .3);
+}
+
+_duration = 4s
+
+snake_box() {
+    width: 6px;
+    height: 6px;
+    background: #8bc34a;
+    box_shadow_generate(0 1px 0 0 #33691e);
+    border-radius: 2px;
+    position: absolute;
+    animation-name: move;
+    animation-duration: _duration;
+    animation-iteration-count: infinite;
+}
+
+.snake {
+    width: 24px;
+    height: 24px;
+    /*background: gray;*/
+    position: relative;
+    /*zoom: 5;*/
+    animation-name: show;
+    animation-duration: 1s;
+    &__box0 {
+        snake_box()
+        background: #558b2f;
+        top: 6px;
+        left: 18px;
+    }
+    &__box1 {
+        snake_box()
+        top: 6px;
+        left: 12px;
+        animation-name: move, move2;
+        animation-delay: (_duration/16);
+    }
+    &__box2 {
+        snake_box()
+        top: 6px;
+        left: 6px;
+        animation-name: move, move3;
+        animation-delay: (_duration/16)*2;
+    }
+    &__box3 {
+        snake_box()
+        top: 6px;
+        left: 0;
+        animation-name: move, move4;
+        animation-delay: (_duration/16)*3;
+    }
+
+}
+
+@keyframes show {
+    0% {
+        opacity: 0
+    }
+    80% {
+        opacity: .01
+    }
+    100% {
+        opacity: 1
+    }
+}
+
+@keyframes move2 {
+    0%, 18.75% {
+        z-index: 0
+    }
+    25%, 50% {
+        z-index: -1
+    }
+    56.25%, 100% {
+        z-index 0
+    }
+}
+
+@keyframes move3 {
+    0%, 18.75% {
+        z-index: 0
+    }
+    25%, 50% {
+        z-index: -2
+    }
+    56.25%, 100% {
+        z-index 0
+    }
+}
+
+@keyframes move4 {
+    0%, 18.75% {
+        z-index: 0
+    }
+    25%, 50% {
+        z-index: -3
+    }
+    56.25%, 100% {
+        z-index 0
+    }
+}
+
+@keyframes move {
+    0% {
+        top: 6px;
+        left: 18px;
+    }
+    6.25% {
+        top: 0;
+        left: 18px;
+    }
+    12.5% {
+        top: 0;
+        left: 12px;
+    }
+    18.75% {
+        top: 0;
+        left: 6px;
+    }
+    25% {
+        top: 0;
+        left: 0;
+    }
+    31.25% {
+        top: 6px;
+        left: 0;
+    }
+    37.5% {
+        top: 12px;
+        left: 0;
+    }
+    43.75% {
+        top: 18px;
+        left: 0;
+    }
+    50% {
+        top: 18px;
+        left: 6px;
+    }
+    56.25% {
+        top: 18px;
+        left: 12px;
+    }
+    62.5% {
+        top: 18px;
+        left: 18px;
+    }
+    68.75% {
+        top: 12px;
+        left: 18px;
+    }
+    75% {
+        top: 12px;
+        left: 12px;
+    }
+    81.25% {
+        top: 12px;
+        left: 6px;
+    }
+    87.5% {
+        top: 6px;
+        left: 6px;
+    }
+    93.75% {
+        top: 6px;
+        left: 12px;
+    }
+    100% {
+        top: 6px;
+        left: 18px;
+    }
+
+}
+
+
+
+

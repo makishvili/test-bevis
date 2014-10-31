@@ -1,0 +1,171 @@
+box_shadow_generate(param) {
+    box-shadow: param, 0 3px 20px rgba(0, 0, 0, .25);
+}
+
+button-skin-common() {
+    position: relative;
+    /*width: 100%;*/
+    display: inline-block;
+    margin: 0 3px;
+    height: 31px
+}
+
+button__control-skin-common() {
+    position: relative;
+    width: 100%;
+    display: inline;
+    border: none;
+    border-radius: 5px;
+    background: #999;
+    font-size: 16px;
+    color: #fff;
+    cursor: pointer;
+    outline: none;
+    /*transition-duration: 0.3s;*/
+    overflow: hidden;
+    box_shadow_generate(0 3px 0 0 #808080)
+    margin 0
+    padding 5px 10px
+    &:hover {
+        background: #aaa;
+    }
+    &:active {
+        top: 2px;
+        box_shadow_generate(0 1px 0 0 #808080)
+    }
+}
+
+color-blue() {
+    button-skin-common()
+    &__control {
+        button__control-skin-common()
+        background: #5677fc;
+        box_shadow_generate(0 3px 0 0 #2a36b1)
+        &:hover {
+            background: #738ffe;
+        }
+        &:active {
+            box_shadow_generate(0 1px 0 0 #2a36b1)
+        }
+    }
+}
+
+.button {
+    button-skin-common()
+
+    &__control {
+        button__control-skin-common()
+    }
+    &_size-S {
+        button-skin-common()
+        &__control {
+            button__control-skin-common()
+            padding: 3px 8px;
+            font-size: 14px;
+        }
+    }
+    &_size-M {
+        button-skin-common()
+        &__control {
+            button__control-skin-common()
+            padding 5px 10px
+            font-size: 16px;
+        }
+    }
+    &_size-L {
+        button-skin-common()
+        &__control {
+            button__control-skin-common()
+            padding 7px 12px
+            font-size: 18px;
+        }
+    }
+
+    &_size-XL {
+        button-skin-common()
+        &__control {
+            button__control-skin-common()
+            padding 9px 14px
+            font-size: 20px;
+        }
+    }
+
+    &_size-XXL {
+        button-skin-common()
+        &__control {
+            button__control-skin-common()
+            padding 11px 16px
+            font-size: 22px;
+        }
+    }
+
+    &_color-blue {
+        color-blue()
+    }
+
+    &_color-green {
+        button-skin-common()
+        &__control {
+            button__control-skin-common()
+            background: #8bc34a;
+            box_shadow_generate(0 3px 0 0 #33691e)
+            &:hover {
+                background: #9ccc65;
+            }
+            &:active {
+                box_shadow_generate(0 1px 0 0 #33691e)
+            }
+        }
+    }
+
+    &_color-red {
+        button-skin-common()
+        &__control {
+            button__control-skin-common()
+            background: #e51c23;
+            box_shadow_generate(0 3px 0 0 #b0120a)
+            &:hover {
+                background: #e84e40;
+            }
+            &:active {
+                box_shadow_generate(0 1px 0 0 #b0120a)
+            }
+        }
+    }
+
+    &_color-orange {
+        button-skin-common()
+        &__control {
+            button__control-skin-common()
+            background: #ff9800;
+            box_shadow_generate(0 3px 0 0 #e65100)
+            &:hover {
+                background: #ffa726;
+            }
+            &:active {
+                box_shadow_generate(0 1px 0 0 #e65100)
+            }
+        }
+    }
+
+    &_color-white {
+        button-skin-common()
+        &__control {
+            button__control-skin-common()
+            background: #eeeeee;
+            box_shadow_generate(0 3px 0 0 #616161)
+            color: #333;
+            &:hover {
+                background: #f5f5f5;
+            }
+            &:active {
+                box_shadow_generate(0 1px 0 0 #616161)
+            }
+        }
+    }
+
+}
+
+
+
+
