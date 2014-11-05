@@ -50,6 +50,12 @@ echo "modules.define(
 });
 " > blocks/$BlockName/$BlockName.js
 
+echo "#Документация к блоку: $BlockName
+
+##Входные данные:" > blocks/$BlockName/$BlockName.md
+
+
+
 echo "-------------------------------------------------"
 echo "Создан блок blocks/$BlockName"
 echo "-------------------------------------------------"

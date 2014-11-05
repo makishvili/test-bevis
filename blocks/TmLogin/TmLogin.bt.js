@@ -16,21 +16,40 @@ module.exports = function (bt)
         ctx.setTag('div');
         ctx.setContent([
             {
-                block: "Title"
-            },
-            {
-                block: 'input',
-                placeholder: 'Логин'
-            },
-            {
-                block: 'input',
-                placeholder: 'Пароль'
-            },
-            {
-                block: 'button',
-                view: 'color-blue',
-                value: 'Войти'
+                block: 'row',
+                content: [
+                    {
+                        block: 'input',
+                        placeholder: 'Логин'
+                    }
+                ]
             }
+            ,
+            {
+                block: 'row',
+                content: [
+                    {
+                        block: 'input',
+                        placeholder: 'Пароль'
+                    }
+                ]
+            },
+            {
+                block: 'row',
+                content: [
+                    {
+                        block: 'button',
+                        view: 'color-blue',
+                        value: 'Войти'
+                    },
+                    {
+                        block: 'button',
+                        view: 'color-red',
+                        value: 'Получить Доступ'
+                    }
+                ]
+            }
+
         ])
     });
 

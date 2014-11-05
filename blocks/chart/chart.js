@@ -32,7 +32,6 @@ modules.define(
                     }
                 );
 
-
                 // устанавливаем размеры
                 var margin = {top: 10, right: 30, bottom: 100, left: 40},
                     margin2 = {top: 430, right: 10, bottom: 20, left: 40},
@@ -98,6 +97,7 @@ modules.define(
 
                 getData(function (_data)
                 {
+                    console.time("getData");
                     // преобразовываем время в обьектный вид
                     date = new Date(_data.time);
 
@@ -122,14 +122,16 @@ modules.define(
                     // возвращаем исходное значение для даты последнего замера
                     date = new Date(_data.time);
 
+                    console.timeEnd("getData");
                     // рисуем график
                     DrawChart();
+
                 });
 
                 var interval = setInterval(function ()
                 {
                     getData(refresh);
-                }, 60000);
+                }, 10000);
 
                 // получаем данные
                 function getData(handler)
@@ -149,32 +151,50 @@ modules.define(
                 // обновляем график
                 function refresh(_data)
                 {
+                    console.time("refresh");
+                    console.time("перерасчет данных");
                     date.setMinutes(date.getMinutes() + 1);
+
                     delete DateToValue[data[0].date];
+
                     data = data.slice(1);
                     var val = _data.value[_data.value.length - 1];
                     data[data.length] = {date: new Date(date), value: val};
                     DateToValue[new Date(date) + ""] = val;
 
                     max = (max > val) ? max : val;
-
+                    console.timeEnd("перерасчет данных");
+                    console.time("наложение данных");
+                    console.time("datum");
                     focus_area
                         .datum(data);
 
                     context_area
                         .datum(data);
-
+                    console.timeEnd("datum");
+                    console.time("domain");
                     x2.domain([data[0].date, data[data.length - 1].date]);
 
                     y2.domain([0, max]);
+                    console.timeEnd("domain");
+
+                    console.time("attr");
 
                     context_area.attr("d", area2);
+
+                    console.timeEnd("attr");
+
+                    console.time("call");
                     context_x.call(xAxis2);
+                    console.timeEnd("call");
+                    console.timeEnd("наложение данных");
+                    console.timeEnd("refresh");
                 }
 
                 // рисуем график
                 function DrawChart()
                 {
+                    console.time("DrawChart");
                     x.domain([data[0].date, data[data.length - 1].date]);
                     y.domain([0, max]);
 
@@ -211,11 +231,13 @@ modules.define(
                         .selectAll("rect")
                         .attr("y", -6)
                         .attr("height", height2 + 7);
+                    console.timeEnd("DrawChart");
                 }
 
                 // отоброжение выбронного участка на большом графике
                 function brushed()
                 {
+                    console.time("brushed");
                     var
                         val = [],
                         start = new Date(brush.extent()[0].setSeconds(0)),
@@ -240,6 +262,7 @@ modules.define(
                     focus_area.attr("d", area);
                     focus_x.call(xAxis);
                     focus_y.call(yAxis);
+                    console.timeEnd("brushed");
                 }
 
             }

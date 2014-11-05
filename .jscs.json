@@ -59,8 +59,12 @@
         "<",
         "<="
     ],
-    "requireRightStickedOperators": ["!"],
-    "requireLeftStickedOperators": [","],
+    "requireRightStickedOperators": [
+        "!"
+    ],
+    "requireLeftStickedOperators": [
+        ","
+    ],
     "disallowImplicitTypeConversion": [
         "numeric",
         "boolean",
@@ -69,7 +73,10 @@
     ],
     "disallowKeywords": ["with"],
     "disallowMultipleLineBreaks": true,
-    "disallowKeywordsOnNewLine": ["else", "catch"],
+    "disallowKeywordsOnNewLine": [
+        "else",
+        "catch"
+    ],
     "requireLineFeedAtFileEnd": true,
     "validateJSDoc": {
         "checkParamNames": true,

@@ -1,7 +1,5 @@
 ## Запуск
 ```
-git clone git@github.com:bevis-ui/bevis-stub.git your-project
-cd your-project
 make
 ```
 Команда `make` выкачает все необходимые инструменты, соберет единственную страницу и запустит локальный сервер.

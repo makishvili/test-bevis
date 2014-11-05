@@ -1,12 +1,12 @@
 {
-    "name": "bevis-stub",
+    "name": "TM-bevis",
     "private": true,
-    "version": "0.0.0",
-    "description": "Project stub based on BEViS",
+    "version": "0.0.1",
+    "description": "TM on BEViS",
     "scripts": {
         "test": "make test"
     },
-    "author": "Yandex Maps",
+    "author": "Egor Trubnikov-Panov",
     "license": "MIT",
     "dependencies": {
         "enb-bevis-helper": ">=1.0.2",

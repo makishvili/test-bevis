@@ -1,20 +1,40 @@
-module.exports = function (bt) {
+module.exports = function (bt)
+{
 
-    bt.match('input', function (ctx) {
-        ctx.setTag('div');
+    bt.setDefaultView('input', 'size-S');
+
+    bt.match('input*', function (ctx)
+    {
+        ctx.enableAutoInit();
+
+        var value = ctx.getParam('value');
+        var name = ctx.getParam('name');
+        var placeholder = ctx.getParam('placeholder');
+
         ctx.setContent([
             {
-                elem: "control",
-                value: ctx.getParam('value'),
-                placeholder: ctx.getParam('placeholder')
+                elem: 'control',
+                inputValue: value,
+                inputName: name,
+                placeholder: placeholder
+            },
+            {
+                elem: 'clear'
             }
         ]);
     });
 
-    bt.match('input__control', function(ctx){
+    bt.match('input*__control', function (ctx)
+    {
         ctx.setTag('input');
-        ctx.setAttr('value',ctx.getParam('value'));
-        ctx.setAttr('placeholder',ctx.getParam('placeholder'));
-    })
+
+        var currentValue = ctx.getParam('inputValue');
+        var currentName = ctx.getParam('inputName');
+        var currentPlaceholder = ctx.getParam('placeholder');
+
+        ctx.setAttr('value', currentValue);
+        ctx.setAttr('name', currentName);
+        ctx.setAttr('placeholder', currentPlaceholder);
+    });
 
 };
