@@ -6,15 +6,80 @@ modules.define(
         var chart = inherit(YBlock, {
             __constructor: function ()
             {
-                this.__base.apply(this, arguments);
+
+                /*
+                 todo: добавить ховеры по значениям
+                 сделать кнопки по дням
+                 -- разбить данные по дням *
+                 сделать автоапдейт
+                 */
+
+                var _th = this;
+                _th.__base.apply(this, arguments);
                 // здесь описываем то, что происходит сразу после создания инстанса класса
 
-                var
-                    data = [],
-                    date = 0,
-                    DateToValue = {},
-                    max = 0;
+                // место куда впихнем графики
+                _th.__view = this._findElement('view')[0];
 
+                // место куда впихнем кнопки
+                _th.__days = this._findElement('days');
+
+                // todo впихнуть кнопки
+                var xx = _th._createDomElement({
+                    block: "button"
+                });
+
+                console.log(xx);
+
+                // Данные
+                var data = [];
+                var days = [];
+                var _time = 0;
+
+                // Получаем данные
+                $.ajax({
+                    url: '/tm_proxy',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: '943456643%2C17%2C',
+                    async: false, //todo убрать синхронный запрос
+                    success: function (_data)
+                    {
+                        // преобразовываем время в обьектный вид
+                        var time = new Date(_data.time);
+
+                        var _time1 = new Date(time);
+                        _time1.setMinutes(0);
+                        _time1.setHours(0);
+                        var _time2 = null;
+
+                        var length = _data.value.length;
+
+                        // проходим справа налево по массиву и сохраняем элементы с уменьшенным на одну минуту временем
+                        _data.value.reduceRight(function (prev, elem, iter)
+                        {
+                            _time2 = new Date(time);
+                            _time2.setMinutes(0);
+                            _time2.setHours(0);
+
+                            if (String(_time1) != String(_time2))  {
+                                console.log("равны");
+                                days.push(data);
+                                _time1 = new Date(time);
+                                _time1.setMinutes(0);
+                                _time1.setHours(0);
+                                data = [];
+                            }
+                            data.push({time: new Date(time), value: elem});
+                            time.setMinutes(time.getMinutes() - 1);
+                        });
+                        days.push(data);
+                    }
+                });
+
+                console.log(days);
+
+                // определяем настройки языка
                 var RU = d3.locale(
                     {
                         "decimal": ",",
@@ -25,7 +90,7 @@ modules.define(
                         "date": "%d.%m.%Y",
                         "time": "%H:%M:%S",
                         "periods": ["AM", "PM"],
-                        "days": ["воскресен", "понедельник", "вторник", "среда", "четверг", "пятница", "суббота"],
+                        "days": ["воскресение", "понедельник", "вторник", "среда", "четверг", "пятница", "суббота"],
                         "shortDays": ["вс", "пн", "вт", "ср", "чт", "пт", "сб"],
                         "months": ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"],
                         "shortMonths": ["янв", "фев", "мар", "апр", "май", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"]
@@ -33,238 +98,169 @@ modules.define(
                 );
 
                 // устанавливаем размеры
-                var margin = {top: 10, right: 30, bottom: 100, left: 40},
-                    margin2 = {top: 430, right: 10, bottom: 20, left: 40},
-                    width = $(window).width() - margin.left - margin.right,
-                    height = 500 - margin.top - margin.bottom,
-                    height2 = 500 - margin2.top - margin2.bottom,
+                var
+                    margin_focus = {top: 40, right: 40, bottom: 100, left: 40},
+                    margin_select = {top: 470, right: 40, bottom: 20, left: 40},
+                    width = $(_th.getDomNode()).width(),
+                    height = 600,
+                    height_focus = 400,
+                    height_select = 50,
+                    width_focus = width - margin_focus.right - margin_focus.left,
+                    width_select = width - margin_select.right - margin_select.left;
 
-                    focus_area, focus_x, focus_y,
-                    context_area, context_x, context_y,
-
-                    x = d3.time.scale().range([0, width]),
-                    x2 = d3.time.scale().range([0, width]),
-                    y = d3.scale.linear().range([height, 0]),
-                    y2 = d3.scale.linear().range([height2, 0]),
-
-                    xAxis = d3.svg.axis().scale(x).orient("bottom").tickFormat(RU.timeFormat("%a, %e %b, %H:%M")),
-                    xAxis2 = d3.svg.axis().scale(x2).orient("bottom").tickFormat(RU.timeFormat("%a, %e %b, %H:%M")),
-                    yAxis = d3.svg.axis().scale(y).orient("left"),
-
-                    brush = d3.svg.brush()
-                        .x(x2)
-                        .on("brushend", brushed),
-
-                    area = d3.svg.area()
-                        .x(function (d)
-                        {
-                            return x(d.date);
-                        })
-                        .y0(height)
-                        .y1(function (d)
-                        {
-                            return y(d.value);
-                        }),
-
-                    area2 = d3.svg.area()
-                        .x(function (d)
-                        {
-                            return x2(d.date);
-                        })
-                        .y0(height2)
-                        .y1(function (d)
-                        {
-                            return y2(d.value);
-                        }),
-
-                    svg = d3.select(".chart").append("svg")
-                        .attr("width", width + margin.left + margin.right)
-                        .attr("height", height + margin.top + margin.bottom);
-
-                svg.append("defs").append("clipPath")
-                    .attr("id", "clip")
-                    .append("rect")
+                // создаем наш svg элемент
+                var svg = d3
+                    .select(_th.__view)
+                    .append("svg")
                     .attr("width", width)
                     .attr("height", height);
 
+                // добавляем контейнер для подробного графика
                 var focus = svg.append("g")
-                        .attr("class", "focus")
-                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")"),
+                    .attr("class", "chart__focus")
+                    .attr("width", width_focus)
+                    .attr("height", height_focus)
+                    .attr("transform", "translate(" + margin_focus.left + "," + margin_focus.top + ")");
 
-                    context = svg.append("g")
-                        .attr("class", "context")
-                        .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
+                // контейнер для общего графика
+                var select = svg.append("g")
+                    .attr("class", "chart__select")
+                    .attr("width", width_select)
+                    .attr("height", height_select)
+                    .attr("transform", "translate(" + margin_select.left + "," + margin_select.top + ")");
 
-                getData(function (_data)
-                {
-                    console.time("getData");
-                    // преобразовываем время в обьектный вид
-                    date = new Date(_data.time);
+                // ограничение для area
+                svg.append("defs").append("clipPath")
+                    .attr("id", "clip")
+                    .append("rect")
+                    .attr("width", width_focus)
+                    .attr("height", height_focus);
 
-                    // вычитываем последний элемент и сохраняем
-                    var value_l = _data.value.length,
-                        val_bef = _data.value[value_l - 1];
+                // градиент
+                var gradient = svg.append("defs").append("linearGradient")
+                    .attr("id", "lineGradient")
+                    .attr("x1", 0)
+                    .attr("y1", 1)
+                    .attr("x2", 0)
+                    .attr("y2", 0);
+                // шаги градиента
+                gradient.append("stop")
+                    .attr("style", "stop-color:#FFA000")
+                    .attr("offset", "0");
+                gradient.append("stop")
+                    .attr("style", "stop-color:#FFA000")
+                    .attr("offset", "20%");
 
-                    data[value_l - 1] = {date: new Date(date), value: val_bef};
-                    DateToValue[new Date(date) + ""] = val_bef;
+                gradient.append("stop")
+                    .attr("style", "stop-color:#F57C00")
+                    .attr("offset", "20%");
+                gradient.append("stop")
+                    .attr("style", "stop-color:#F57C00")
+                    .attr("offset", "50%");
 
-                    max = (max > val_bef) ? max : val_bef;
+                gradient.append("stop")
+                    .attr("style", "stop-color:#E64A19")
+                    .attr("offset", "50%");
+                gradient.append("stop")
+                    .attr("style", "stop-color:#E64A19")
+                    .attr("offset", "100%");
 
-                    // проходим справа налево по массиву и сохраняем элементы с уменьшенным на одну минуту временем
-                    _data.value.reduceRight(function (prev, elem, iter)
+                // шкалы для подробного графика
+                var focus_x_scale = d3.time.scale().range([0, width_focus]),
+                    focus_y_scale = d3.scale.linear().range([height_focus, 0]);
+
+                // шкалы для общего графика
+                var select_x_scale = d3.time.scale().range([0, width_select]),
+                    select_y_scale = d3.scale.linear().range([height_select, 0]);
+
+                // оси для подробного графика
+                var focus_x_Axis = d3.svg.axis().scale(focus_x_scale).orient("bottom").tickFormat(RU.timeFormat("%a, %e %b, %H:%M")),
+                    focus_y_Axis = d3.svg.axis().scale(focus_y_scale).orient("left");
+
+                // ось для общего графика
+                var select_x_Axis = d3.svg.axis().scale(select_x_scale).orient("bottom").tickFormat(RU.timeFormat("%a, %e %b, %H:%M"));
+
+                // Генератор area для подробного графика
+                var focus_area = d3.svg.area()
+                    .x(function (d)
                     {
-                        date.setMinutes(date.getMinutes() - 1);
-                        data[iter] = {date: new Date(date), value: elem};
-                        DateToValue[new Date(date) + ""] = elem;
-                        max = (max > elem) ? max : elem;
+                        return focus_x_scale(d.time);
+                    })
+                    .y0(height_focus)
+                    .y1(function (d)
+                    {
+                        return focus_y_scale(d.value);
                     });
 
-                    // возвращаем исходное значение для даты последнего замера
-                    date = new Date(_data.time);
-
-                    console.timeEnd("getData");
-                    // рисуем график
-                    DrawChart();
-
-                });
-
-                var interval = setInterval(function ()
-                {
-                    getData(refresh);
-                }, 10000);
-
-                // получаем данные
-                function getData(handler)
-                {
-                    $.ajax({
-                        url: '/tm_proxy',
-                        type: 'POST',
-                        dataType: 'json',
-                        data: '943456643%2C17%2C',
-                        success: function (_data)
-                        {
-                            handler(_data);
-                        }
+                // Генератор area для общего графика
+                var select_area = d3.svg.area()
+                    .x(function (d)
+                    {
+                        return select_x_scale(d.time);
+                    })
+                    .y0(height_select)
+                    .y1(function (d)
+                    {
+                        return select_y_scale(d.value);
                     });
-                }
 
-                // обновляем график
-                function refresh(_data)
-                {
-                    console.time("refresh");
-                    console.time("перерасчет данных");
-                    date.setMinutes(date.getMinutes() + 1);
+                // выборка части общего графика
+                var brush = d3.svg.brush()
+                    .x(select_x_scale)
+                    .on("brush", function ()
+                    {
+                        focus_x_scale.domain(brush.empty() ? focus_x_scale.domain() : brush.extent());
 
-                    delete DateToValue[data[0].date];
+                        dom_focus_area.attr("d", focus_area);
 
-                    data = data.slice(1);
-                    var val = _data.value[_data.value.length - 1];
-                    data[data.length] = {date: new Date(date), value: val};
-                    DateToValue[new Date(date) + ""] = val;
+                        focus_x_scale
+                            .call(focus_x_Axis);
+                        //focus_y_scale
+                        //    .call(yAxis);
+                    });
 
-                    max = (max > val) ? max : val;
-                    console.timeEnd("перерасчет данных");
-                    console.time("наложение данных");
-                    console.time("datum");
-                    focus_area
-                        .datum(data);
+                // Домены для подробного графика
+                focus_x_scale.domain([data[0].time, data[data.length - 1].time]);
+                focus_y_scale.domain([0, 100]);
 
-                    context_area
-                        .datum(data);
-                    console.timeEnd("datum");
-                    console.time("domain");
-                    x2.domain([data[0].date, data[data.length - 1].date]);
+                // Домены для общего графика
+                select_x_scale.domain(focus_x_scale.domain());
+                select_y_scale.domain(focus_y_scale.domain());
 
-                    y2.domain([0, max]);
-                    console.timeEnd("domain");
+                // Добавляем area для подробного графика
+                var dom_focus_area = focus.append("path")
+                    .datum(data)
+                    .attr("class", "area")
+                    .attr("d", focus_area);
 
-                    console.time("attr");
+                // Добавляем area для общего графика
+                var dom_select_area = select.append("path")
+                    .datum(data)
+                    .attr("class", "area")
+                    .attr("d", select_area);
 
-                    context_area.attr("d", area2);
-
-                    console.timeEnd("attr");
-
-                    console.time("call");
-                    context_x.call(xAxis2);
-                    console.timeEnd("call");
-                    console.timeEnd("наложение данных");
-                    console.timeEnd("refresh");
-                }
-
-                // рисуем график
-                function DrawChart()
-                {
-                    console.time("DrawChart");
-                    x.domain([data[0].date, data[data.length - 1].date]);
-                    y.domain([0, max]);
-
-                    x2.domain(x.domain());
-                    y2.domain(y.domain());
-
-                    focus_area = focus.append("path")
-                        .datum(data)
-                        .attr("class", "area")
-                        .attr("d", area);
-
-                    focus_x = focus.append("g")
+                // добавляем шкалы для подробного графика
+                var focus_x_dom = focus.append("g")
                         .attr("class", "x axis")
-                        .attr("transform", "translate(0," + height + ")")
-                        .call(xAxis);
+                        .attr("transform", "translate(0," + height_focus + ")")
+                        .call(focus_x_Axis),
 
-                    focus_y = focus.append("g")
+                    focus_y_dom = focus.append("g")
                         .attr("class", "y axis")
-                        .call(yAxis);
+                        .call(focus_y_Axis);
 
-                    context_area = context.append("path")
-                        .datum(data)
-                        .attr("class", "area")
-                        .attr("d", area2);
-
-                    context_x = context.append("g")
+                // добавляем шкалы для общего графика
+                var select_x_dom = select.append("g")
                         .attr("class", "x axis")
-                        .attr("transform", "translate(0," + height2 + ")")
-                        .call(xAxis2);
+                        .attr("transform", "translate(0," + height_select + ")")
+                        .call(select_x_Axis),
 
-                    context_y = context.append("g")
+                    select_y_dom = select.append("g")
                         .attr("class", "x brush")
                         .call(brush)
                         .selectAll("rect")
                         .attr("y", -6)
-                        .attr("height", height2 + 7);
-                    console.timeEnd("DrawChart");
-                }
-
-                // отоброжение выбронного участка на большом графике
-                function brushed()
-                {
-                    console.time("brushed");
-                    var
-                        val = [],
-                        start = new Date(brush.extent()[0].setSeconds(0)),
-                        end = (new Date(brush.extent()[1].setSeconds(0))) + "";
-
-                    function recurs()
-                    {
-                        var _start = start + "";
-                        if (_start != end) {
-                            val.push(DateToValue[_start]);
-                            start.setMinutes(start.getMinutes() + 1);
-                            recurs()
-                        } else {
-                            return void(0);
-                        }
-                    }
-
-                    recurs();
-
-                    x.domain(brush.empty() ? x2.domain() : brush.extent());
-                    y.domain([0, d3.max(val)]);
-                    focus_area.attr("d", area);
-                    focus_x.call(xAxis);
-                    focus_y.call(yAxis);
-                    console.timeEnd("brushed");
-                }
-
+                        .attr("height", height_select + 7);
             }
 
             // инстанс-методы
@@ -273,7 +269,6 @@ modules.define(
             {
                 return 'chart';
             }
-
             // статические методы
         });
 

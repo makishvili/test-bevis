@@ -116,6 +116,17 @@ module.exports = function (pages)
                             block: 'snake'
                         }
                     ]
+                },
+                {
+                    block: "row",
+                    content: [
+                        {
+                            block: 'select',
+                            list: ["первое","второе","третье","четвертое","пятое"]
+                        }
+                        ,
+                        {raw: "<select><option value='1'>23</option><option value='2'>2233</option><option value='3'>4523</option></select>"}
+                    ]
                 }
             ]
         };

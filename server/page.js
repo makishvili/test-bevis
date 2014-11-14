@@ -7,15 +7,15 @@ var logger = require('./logger');
 
 var Page = inherit({
     /**
-     * Page
+     * Страница
      *
-     * @param {String} id Relative path to page (pages/index, for example)
-     * @param {String} pageName Page name.
-     * @param {Request} req Node request Object
-     * @param {Response} res Node response Object
+     * @param {String} path - Относительный путь к готовой странице
+     * @param {String} pageName - Имя страницы.
+     * @param {Request} req - Объект запроса
+     * @param {Response} res - Объект ответа
      */
-    __constructor: function (id, pageName, req, res) {
-        this._id = id;
+    __constructor: function (path, pageName, req, res) {
+        this._id = path;
         this._pageName = pageName;
         this._req = req;
         this._res = res;
@@ -24,7 +24,7 @@ var Page = inherit({
     },
 
     /**
-     * Build page
+     * создание страницы
      *
      * @returns {Promise} promise
      */
@@ -45,7 +45,7 @@ var Page = inherit({
     },
 
     /**
-     * Returns page handlers
+     * Возвращает обработчики страницы
      *
      * @returns {Promise} promise
      */
@@ -54,7 +54,7 @@ var Page = inherit({
     },
 
     /**
-     * Returns bt templates
+     * Возвращает bt шаблоны
      *
      * @returns {Promise} promise
      */
@@ -63,7 +63,7 @@ var Page = inherit({
     },
 
     /**
-     * Returns i18n
+     * Возвращает i18n
      *
      * @returns {Promise} promise
      */
@@ -72,7 +72,7 @@ var Page = inherit({
     },
 
     /**
-     * Returns path to a technology
+     * Возвращает путь к технологии
      *
      * @param {String} tech
      * @returns {String} path
@@ -82,7 +82,7 @@ var Page = inherit({
     },
 
     /**
-     * Returns path for css and js files
+     * Возвращает путь до css и js файлов
      *
      * @returns {Object}
      */
@@ -96,7 +96,7 @@ var Page = inherit({
     },
 
     /**
-     * Returns path to a technology
+     * Возвращает путь к технологии
      *
      * @param {Object} btJson
      * @param {BT} template

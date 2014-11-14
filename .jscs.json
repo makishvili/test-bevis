@@ -26,7 +26,6 @@
         "function",
         "catch"
     ],
-    "disallowMultipleVarDecl": true,
     "disallowLeftStickedOperators": [
         "?",
         "+",
@@ -72,7 +71,6 @@
         "string"
     ],
     "disallowKeywords": ["with"],
-    "disallowMultipleLineBreaks": true,
     "disallowKeywordsOnNewLine": [
         "else",
         "catch"

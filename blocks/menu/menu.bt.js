@@ -6,7 +6,7 @@ module.exports = function (bt)
         ctx.setTag('div');
 
         ctx.setContent(
-            ['СТМ DartIT',
+            ['Title',
              {
                  block: "settings"
              }

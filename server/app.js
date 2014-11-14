@@ -42,6 +42,7 @@ app
         Page.createHandler(pageName)(req, res, next);
     });
 
+// формирование тестовых данных
 var data = (function ()
 {
     var array = [];
@@ -58,23 +59,24 @@ app.post('/tm_proxy', function (req, res)
     data[data.length] = Math.random() * 100;
     data = data.slice(1);
     time = (new Date()).setSeconds(0);
-
     res.send({time: time, value: data});
 });
+
+////
 
 function startApp(portOrSocket)
 {
     app
         .listen(portOrSocket, function ()
         {
-            logger.info('app started on %s', portOrSocket);
+            logger.info('Приложение запущено на порту:', portOrSocket);
             if (env.socket) {
                 fs.chmod(env.socket, '0777');
             }
         })
         .once('error', function (err)
         {
-            logger.error('worker %s has failed to start application', process.pid);
+            logger.error('Процесс %s не удалось запустить приложение', process.pid);
             if (err.code === 'EADDRINUSE') {
                 logger.error('port (or socket) %s is taken', portOrSocket);
                 process.kill();

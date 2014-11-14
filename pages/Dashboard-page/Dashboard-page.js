@@ -1,5 +1,5 @@
 modules.require(
-    ['block','d3'],
+    ['block'],
     function (Block) {
 
         Block.initDomTree(document.body).done(function () {

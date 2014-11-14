@@ -34,6 +34,6 @@ if (cluster.isMaster) {
         });
     }
 } else {
-    logger.info('worker %s started', process.pid);
+    logger.info('Процесс %s запущен', process.pid);
     app.start();
 }
