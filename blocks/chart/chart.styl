@@ -1,17 +1,13 @@
 .chart {
+    padding-top 20px
+    position relative;
 
     &__view {
-
         svg {
             font: 10px sans-serif;
             width: 100%;
         }
 
-        .chart__focus {
-            .area {
-                stroke: #EEEEEE;
-            }
-        }
         .area {
             fill: #7cb342;
         }
@@ -21,15 +17,47 @@
             stroke: #212121;
             shape-rendering: crispEdges;
         }
+
         .axis text {
             font-weight: 700;
             color: #212121;
         }
 
         .brush .extent {
-            /*stroke: #EEEEEE;*/
-            fill-opacity: .3;
+            fill-opacity: .2;
         }
+
+        .hovered {
+            fill: #C4C4C4;
+            stroke: #555555;
+            cursor pointer;
+            &:hover {
+                fill: #b1b1b1;
+                stroke: #4b4b4b;
+            }
+        }
+
+        .tooltip_text {
+            text-anchor middle;
+            font: 14px sans-serif;
+        }
+    }
+
+    &__title {
+
+        margin: 0 0 0 40px;
+    }
+
+    &__value {
+        position absolute;
+        top 10px;
+        right 40px;
+        padding 10px;
+        border-radius 5px;
+        background: rgba(196, 196, 196, 0.2);
+        border: 1px solid rgba(85, 85, 85, 0.51);
+        opacity: 0;
+        transition-duration: 0.3s;
 
     }
 

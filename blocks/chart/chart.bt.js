@@ -8,6 +8,13 @@ module.exports = function (bt)
 
         ctx.setContent([
             {
+                elem: "title",
+                name: ctx.getParam("name")
+            },
+            {
+                elem: "value"
+            },
+            {
                 elem: "view"
             },
             {
@@ -16,14 +23,15 @@ module.exports = function (bt)
         ]);
     });
 
-    bt.match("chart__view", function (ctx)
+    bt.match("chart__*", function (ctx)
     {
         ctx.setTag('div');
 
     });
-    bt.match("chart__days", function (ctx)
+
+    bt.match("chart__title", function (ctx)
     {
-        ctx.setTag('div');
-    })
+        ctx.setContent(ctx.getParam("name"))
+    });
 
 };

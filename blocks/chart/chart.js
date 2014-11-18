@@ -6,7 +6,6 @@ modules.define(
         var chart = inherit(YBlock, {
             __constructor: function ()
             {
-
                 /*
                  todo: добавить ховеры по значениям
                  сделать кнопки по дням
@@ -24,17 +23,17 @@ modules.define(
                 // место куда впихнем кнопки
                 _th.__days = this._findElement('days');
 
-                // todo впихнуть кнопки
-                var xx = _th._createDomElement({
-                    block: "button"
-                });
+                // место куда впихнем значения по точкам
+                _th.__value = this._findElement('value');
 
-                console.log(xx);
+
 
                 // Данные
                 var data = [];
                 var days = [];
                 var _time = 0;
+                // объект значений подробного графика в виде "x": y, ...
+                var value_area = [];
 
                 // Получаем данные
                 $.ajax({
@@ -62,8 +61,7 @@ modules.define(
                             _time2.setMinutes(0);
                             _time2.setHours(0);
 
-                            if (String(_time1) != String(_time2))  {
-                                console.log("равны");
+                            if (String(_time1) != String(_time2)) {
                                 days.push(data);
                                 _time1 = new Date(time);
                                 _time1.setMinutes(0);
@@ -76,8 +74,6 @@ modules.define(
                         days.push(data);
                     }
                 });
-
-                console.log(days);
 
                 // определяем настройки языка
                 var RU = d3.locale(
@@ -96,6 +92,9 @@ modules.define(
                         "shortMonths": ["янв", "фев", "мар", "апр", "май", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"]
                     }
                 );
+
+                // форматер времени
+                var format = RU.timeFormat("%H:%M");
 
                 // устанавливаем размеры
                 var
@@ -143,6 +142,7 @@ modules.define(
                     .attr("y1", 1)
                     .attr("x2", 0)
                     .attr("y2", 0);
+
                 // шаги градиента
                 gradient.append("stop")
                     .attr("style", "stop-color:#FFA000")
@@ -174,17 +174,22 @@ modules.define(
                     select_y_scale = d3.scale.linear().range([height_select, 0]);
 
                 // оси для подробного графика
-                var focus_x_Axis = d3.svg.axis().scale(focus_x_scale).orient("bottom").tickFormat(RU.timeFormat("%a, %e %b, %H:%M")),
+                var focus_x_Axis = d3.svg.axis().scale(focus_x_scale).orient("bottom").tickFormat(RU.timeFormat("%e %b, %H:%M")),
                     focus_y_Axis = d3.svg.axis().scale(focus_y_scale).orient("left");
 
                 // ось для общего графика
-                var select_x_Axis = d3.svg.axis().scale(select_x_scale).orient("bottom").tickFormat(RU.timeFormat("%a, %e %b, %H:%M"));
+                var select_x_Axis = d3.svg.axis().scale(select_x_scale).orient("bottom").tickFormat(RU.timeFormat("%e %b, %H:%M"));
 
                 // Генератор area для подробного графика
                 var focus_area = d3.svg.area()
                     .x(function (d)
                     {
-                        return focus_x_scale(d.time);
+                        var x = focus_x_scale(d.time),
+                            y = focus_y_scale(d.value);
+                        if (x > 0 && x < width_focus) {
+                            value_area.push({"x": x, "y": y, "time": format(d.time), "value": d.value});
+                        }
+                        return x;
                     })
                     .y0(height_focus)
                     .y1(function (d)
@@ -209,14 +214,17 @@ modules.define(
                     .x(select_x_scale)
                     .on("brush", function ()
                     {
-                        focus_x_scale.domain(brush.empty() ? focus_x_scale.domain() : brush.extent());
 
+                        value_area = [];
+                        focus_x_scale.domain(brush.empty() ? focus_x_scale.domain() : brush.extent());
                         dom_focus_area.attr("d", focus_area);
 
-                        focus_x_scale
+
+                        focus_x_dom
                             .call(focus_x_Axis);
-                        //focus_y_scale
-                        //    .call(yAxis);
+
+                        draw_circle();
+
                     });
 
                 // Домены для подробного графика
@@ -261,6 +269,43 @@ modules.define(
                         .selectAll("rect")
                         .attr("y", -6)
                         .attr("height", height_select + 7);
+
+                draw_circle();
+
+                function draw_circle()
+                {
+                    svg.selectAll(".hovered").remove();
+
+                    svg.selectAll("circle")
+                        .data(value_area)
+                        .enter()
+                        .append("circle")
+                        .attr("r", 3.5)
+                        .attr("class", "hovered")
+                        .attr("transform", "translate(" + margin_focus.left + "," + margin_focus.top + ")")
+                        .attr("cx", function (d)
+                        {
+                            return d.x
+                        })
+                        .attr("cy", function (d)
+                        {
+                            return d.y
+                        });
+
+                    svg.selectAll(".hovered").on(
+                        "mouseover", function (d)
+                        {
+                            _th.__value.html("Время: " + d.time + "</br>Значение: " + d.value).css("opacity",1);
+                        }
+                    );
+                    svg.selectAll(".hovered").on(
+                        "mouseout", function (d)
+                        {
+                            _th.__value.css("opacity",0);
+                        }
+                    )
+                }
+
             }
 
             // инстанс-методы

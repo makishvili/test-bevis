@@ -20,13 +20,28 @@ module.exports = function (pages)
                     block: "content",
                     content: [
                         {
-                            block: "chart"
+                            block: "chart",
+                            name: "График1"
                         },
                         {
-                            block: "chart"
+                            block: "chart",
+                            name: "График2"
                         },
                         {
-                            block: "chart"
+                            block: "chart",
+                            name: "График3"
+                        },
+                        {
+                            block: "chart",
+                            name: "График4"
+                        },
+                        {
+                            block: "chart",
+                            name: "График5"
+                        },
+                        {
+                            block: "chart",
+                            name: "График6"
                         }
                     ]
                 }

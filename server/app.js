@@ -6,6 +6,7 @@ var config = require('./config');
 var env = config.get('env');
 var assets = config.get('assets');
 var Page = require('./page');
+var db = require("mongodb");
 
 app
     .use(function (req, res, next)
@@ -47,7 +48,7 @@ var data = (function ()
 {
     var array = [];
     for (var i = 0; i < 10099; i++) {
-        array[i] = Math.random() * 100;
+        array[i] = Math.random() * 80;
     }
     return array
 })();

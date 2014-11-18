@@ -6,7 +6,7 @@ module.exports = function (bt)
         ctx.setTag('div');
 
         ctx.setContent(
-            ['Title',
+            ['Заголовок',
              {
                  block: "settings"
              }
