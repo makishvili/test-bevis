@@ -29,7 +29,7 @@ modules.define(
                 this._container = this.getDomNode();
 
                 this._button = this._findElement('button');
-                this._bindTo(this._button, 'click', this._onButtonClicked, this);
+                this._bindTo(this._button, 'click', this._onButtonClicked);
 
                 // Данные
                 var data = [];
