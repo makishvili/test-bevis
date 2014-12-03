@@ -1,9 +1,9 @@
 modules.define(
     'chart',
-    ['inherit', 'block', 'd3'],
-    function (provide, inherit, YBlock, d3)
+    ['inherit', 'block', 'd3', 'bt'],
+    function (provide, inherit, Block, d3, bt)
     {
-        var chart = inherit(YBlock, {
+        var chart = inherit(Block, {
             __constructor: function ()
             {
                 /*
@@ -26,7 +26,10 @@ modules.define(
                 // место куда впихнем значения по точкам
                 _th.__value = this._findElement('value');
 
+                this._container = this.getDomNode();
 
+                this._button = this._findElement('button');
+                this._bindTo(this._button, 'click', this._onButtonClicked, this);
 
                 // Данные
                 var data = [];
@@ -306,6 +309,21 @@ modules.define(
                     )
                 }
 
+            },
+
+            _onButtonClicked: function () {
+                // Налету создаём блок
+                var errorMessage = bt.apply({
+                    block: 'error-message',
+                    error: {
+                        name: 'Фейковая ошибка',
+                        type: '909',
+                        message: 'нажали на кнопку, создали новый блок и встроили в страницу'
+                    }
+                });
+
+                // Добавляем в контейнер
+                this._container.append(errorMessage);
             }
 
             // инстанс-методы
